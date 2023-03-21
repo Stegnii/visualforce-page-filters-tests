@@ -1,0 +1,39 @@
+<apex:page controller="PositionPage">
+  <h1>Positions</h1>
+  <br/>
+  <br/>
+  <h2>Hello, {!$User.FirstName}!</h2>
+  <p><strong>You can change Status of any of existing Positions. Please, do not forget Save your changes. Thank you!</strong></p>
+<apex:form >
+        <apex:pageBlock title="Positions">
+            <apex:pageBlockSection columns="2">
+                <apex:outputLabel value="Status:"/>
+                <apex:selectList value="{!selectedStatus}" size="1">
+                    <apex:selectOptions value="{!statusOptions}"/>
+                    <apex:actionSupport event="onchange" action="{!filterPositions}"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons >
+<br/>
+<br/>
+<apex:commandButton value="Save" action="{!savePositions}"/>
+            </apex:pageBlockButtons>
+            <apex:pageMessages />
+            <apex:pageBlockTable value="{!positions}" var="position">
+                <apex:column headerValue="Position Name" value="{!position.Name}"/>
+                <apex:column headerValue="Status">
+                    <apex:inputField value="{!position.Status__c}"/>
+                </apex:column>
+                <apex:column headerValue="Open Date" value="{!position.Open_Date__c}"/>
+                <apex:column headerValue="Closed Date" value="{!position.Closed_Date__c}"/>
+                <apex:column headerValue="Min Pay" value="{!position.Min_Pay__c}"/>
+                <apex:column headerValue="Max Pay" value="{!position.Max_Pay__c}"/>
+                <apex:column headerValue="Location" value="{!position.Location__c}"/>
+            </apex:pageBlockTable>
+            <apex:outputPanel rendered="{!isFiltered}">
+                <br/>
+                <apex:outputText >Number of filtered positions: {!numFiltered}</apex:outputText>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+    </apex:page>
