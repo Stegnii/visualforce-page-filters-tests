@@ -10,7 +10,7 @@ To use this project, you must have the following:
 
 ## Installation
 To install and use this project, follow these steps:
-1. Clone the repository to your local machine using the command: `git clone https://github.com/Stegnii/visualforce-page-filters/.git`
+1. Clone the repository to your local machine using the command: `git clone https://github.com/Stegnii/visualforce-page-filters-tests.git`
 2. Open the Salesforce Developer Console in your org and create a new VisualForce page with the code from the `Positions.page` file in the repository.
 3. Create a new Apex class in Salesforce with the code from the `PositionPage.cls` file in the repository.
 4. Add the Apex class to the VisualForce page by updating the `controller` attribute in the VisualForce page code to the name of the Apex class.
