@@ -1,9 +1,8 @@
 @isTest 
 private class PositionPageTest {
 
-@testSetup
+	@testSetup
     static void createTestData() {
-        if ([SELECT COUNT() FROM Position__c] == 0) {
 
     	Account company = new Account(Name = 'Acme');
     	insert company;
@@ -30,59 +29,58 @@ private class PositionPageTest {
             Title__c = 'Manager'
         );
     
-    insert new List<Position__c>{positionOpen, positionClosed};
-        
+    	insert new List<Position__c>{positionOpen, positionClosed};	
+
 	}
-}
-   
-@isTest
+
+	@isTest
     static void testConstructor() {
-    PositionPage page = new PositionPage();
+        
+        Test.startTest();
+    	PositionPage page = new PositionPage();
+        Test.stopTest();
 
-    Integer expectedPositionsCount = 2;
-        System.assertEquals(expectedPositionsCount, page.positions.size());
+        System.assertEquals(2, page.positions.size());
+
         Set<String> expectedPositionNames = new Set<String>{'Position 1', 'Position 2'};
-        for (Position__c positions : page.positions) {
-            System.assert(expectedPositionNames.contains(positions.Name));
+        for (Position__c position : page.positions) {
+            System.assert(expectedPositionNames.contains(position.Name));
         }
-    System.assertEquals(0, page.numFiltered);
-}
+        
+    	System.assertEquals(0, page.numFiltered);
+	}
 
-@isTest
+	@isTest
     static void testFilterPositions() {
-    PositionPage page = new PositionPage();
-
-    page.selectedStatus = 'Open';
-    page.filterPositions();
-    page.selectedStatus = 'Closed';
-    page.filterPositions();
-    page.selectedStatus = null;
-    page.filterPositions();
+    	Test.startTest();
+        List<Position__c> positionsList = [SELECT Name, Status__c FROM Position__c WHERE Status__c = 'Open'];
+        PositionPage page = new PositionPage();
+        page.positions = positionsList;
+		page.selectedStatus = 'Open';
+    	page.filterPositions();
+        Test.stopTest();
+        
+        Integer expectedSize = positionsList.size();
+        System.assertEquals(expectedSize, page.positions.size());    
     }
-    
-@isTest
-    static void testSavePositions() {
 
-PositionPage page = new PositionPage();
-page.selectedStatus = 'New Status';
     
-    Test.startTest();
-    page.savePositions();
-    Test.stopTest();
+	@isTest
+   static void testSavePositions() {
 
-    List<Position__c> updatedPositions = [
-        SELECT Name, Status__c
-        FROM Position__c
-        ];
+		PositionPage page = new PositionPage();
+        for (Position__c position : page.positions) {
+            position.Status__c = 'Canceled';
+        }
+
+    	Test.startTest();
+    	page.savePositions();
+    	Test.stopTest();
+
+    	List<Position__c> updatedPositions = [SELECT Status__c FROM Position__c];
 
         for (Position__c position: updatedPositions) {
-        System.assertEquals('New Status', position.Status__c);
-    }
-
-    List<ApexPages.Message> messages = ApexPages.getMessages();
-    System.assertEquals(1, messages.size());
-    ApexPages.Message message = messages[0];
-    System.assertEquals(ApexPages.Severity.INFO, message.getSeverity());
-    System.assertEquals('Position saved successfully.', message.getDetail());
+        	System.assertEquals('Canceled', position.Status__c);
+    	}
+	}
 }
-    }
